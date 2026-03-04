@@ -1,39 +1,49 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Task } from '../../tasks/task.entity';
 
 @Injectable()
 export class TaskService {
-  getTask(id: string) {
-    console.log(id);
-    return {
-      name: 'Task 1',
-      description: 'Description of Task 1',
-      createdAt: new Date().toISOString(),
-      completedAt: null,
-      userId: 1,
-    };
+  constructor(
+    @InjectRepository(Task)
+    private tasksRepo: Repository<Task>,
+  ) {}
+  
+  
+createTask(userId: number, name: string, description?: string) {
+  const task = this.tasksRepo.create({
+    name,                // use `name` instead of `title`
+    description,
+    user: { id: userId },
+  } as Partial<Task>);   // cast to Partial<Task> to satisfy TypeScript
+  return this.tasksRepo.save(task);
+}
+   getAllTasks() {
+    return this.tasksRepo.find({ relations: ['user'] });
   }
-  createTask(body: any) {
-    console.log(body);
-    return {
-      name: 'Task 1',
-      description: 'Description of Task 1',
-      createdAt: new Date().toISOString(),
-      completedAt: null,
-      userId: 1,
-    };
+  
+  findAll() {
+    return this.tasksRepo.find({ relations: ['user'] });
   }
-  updateTask(id: string, body: any) {
-    console.log(body);
-    return {
-      name: 'Task 1',
-      description: 'Description of Task 1',
-      createdAt: new Date().toISOString(),
-      completedAt: null,
-      userId: 1,
-    };
+ 
+  getTask(id: number) {
+    return this.tasksRepo.findOne({ where: { id }, relations: ['user'] });
   }
-  deleteTask(id: string) {
-    console.log(id);
-    return { message: 'success' };
+
+  async updateTask(id: number, updateData: Partial<Task>) {
+    await this.tasksRepo.update(id, updateData);
+    return this.getTask(id);
+  }
+
+  deleteTask(id: number) {
+    return this.tasksRepo.delete(id);
+  }
+
+  findByUser(userId: number) {
+    return this.tasksRepo.find({
+      where: { user: { id: userId } },
+      relations: ['user'],
+    });
   }
 }

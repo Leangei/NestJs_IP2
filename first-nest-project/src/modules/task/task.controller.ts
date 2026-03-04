@@ -8,32 +8,39 @@ import {
   Post,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
+import { CreateTaskDto } from './dto/create-task.dto';
 
 @Controller('tasks')
 export class TasksController {
   constructor(private readonly taskService: TaskService) {}
 
+  @Get()
+  getAllTasks() {
+    return this.taskService.getAllTasks();
+  }
+
   @Get('/:id')
   getTask(@Param('id') id: string) {
-    return this.taskService.getTask(id);
+    return this.taskService.getTask(Number(id));
   }
-  @Post('/')
-  createTask(@Body() body: any) {
-    return this.taskService.createTask(body);
+
+  @Post()
+  createTask(@Body() body: CreateTaskDto) {
+    return this.taskService.createTask(body.userId, body.name, body.description);
   }
 
   @Patch('/:id/done')
-  markTaskAsDone(@Body() body: any, @Param('id') id: string) {
-    return this.taskService.updateTask(id, body);
+  markTaskAsDone(@Param('id') id: string, @Body() body: any) {
+    return this.taskService.updateTask(Number(id), { ...body, status: 'done' });
   }
 
   @Patch('/:id/pending')
-  markTaskAsPending(@Body() body: any, @Param('id') id: string) {
-    return this.taskService.updateTask(id, body);
+  markTaskAsPending(@Param('id') id: string, @Body() body: any) {
+    return this.taskService.updateTask(Number(id), { ...body, status: 'pending' });
   }
 
   @Delete('/:id')
   deleteTask(@Param('id') id: string) {
-    return this.taskService.deleteTask(id);
+    return this.taskService.deleteTask(Number(id));
   }
 }
