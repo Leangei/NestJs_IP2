@@ -1,26 +1,49 @@
-import {Injectable} from '@nestjs/common';
-import {CreateReceiptDto} from './dto/create-receipt.dto';
-import {UpdateReceiptDto} from './dto/update-receipt.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Receipt } from 'src/database/entities/receipts.entity';
+import { CreateReceiptDto } from './dto/create-receipt.dto';
+import { UpdateReceiptDto } from './dto/update-receipt.dto';
 
 @Injectable()
 export class ReceiptsService {
-  create(createReceiptDto: CreateReceiptDto) {
-    return 'This action adds a new receipt';
+  constructor(
+    @InjectRepository(Receipt)
+    private readonly receiptRepo: Repository<Receipt>,
+  ) {}
+
+  async findAll() {
+    return this.receiptRepo.find({ order: { issuedAt: 'DESC' } });
   }
 
-  findAll() {
-    return `This action returns all receipts`;
+  async findOne(receiptId: string) {
+    const receipt = await this.receiptRepo.findOne({ where: { receiptId } });
+    if (!receipt) throw new NotFoundException('Receipt not found');
+    return receipt;
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} receipt`;
+  async create(dto: CreateReceiptDto) {
+    const receipt = this.receiptRepo.create({
+      issuedAt: new Date(dto.issuedAt),
+      name: dto.name,
+      price: dto.price,
+    });
+    return this.receiptRepo.save(receipt);
   }
 
-  update(id: string, updateReceiptDto: UpdateReceiptDto) {
-    return `This action updates a #${id} receipt`;
+  async update(receiptId: string, dto: UpdateReceiptDto) {
+    const receipt = await this.findOne(receiptId);
+
+    if (dto.issuedAt !== undefined) receipt.issuedAt = new Date(dto.issuedAt);
+    if (dto.name !== undefined) receipt.name = dto.name;
+    if (dto.price !== undefined) receipt.price = dto.price;
+
+    return this.receiptRepo.save(receipt);
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} receipt`;
+  async remove(receiptId: string) {
+    const receipt = await this.findOne(receiptId);
+    await this.receiptRepo.remove(receipt);
+    return { deleted: true, receiptId };
   }
 }
