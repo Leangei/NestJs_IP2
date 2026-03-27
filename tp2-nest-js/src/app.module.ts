@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 import { ReceiptsModule } from './modules/receipts/receipts.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { ReceiptsModule } from './modules/receipts/receipts.module';
       synchronize: true,
     }),
     ReceiptsModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
