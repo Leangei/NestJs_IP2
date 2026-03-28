@@ -6,6 +6,9 @@ import { AppService } from './app.service';
 
 import { ReceiptsModule } from './modules/receipts/receipts.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { OrdersModule } from './orders/orders.module';
+import { OrdersController } from './orders/orders.controller';
+import { CoreModule } from './core/core.module';
 
 @Module({
   imports: [
@@ -19,8 +22,11 @@ import { NotificationsModule } from './notifications/notifications.module';
       autoLoadEntities: true,
       synchronize: true,
     }),
+   
     ReceiptsModule,
     NotificationsModule,
+    OrdersModule,
+    CoreModule,
   ],
   controllers: [AppController],
   providers: [AppService],
