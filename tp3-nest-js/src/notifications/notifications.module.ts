@@ -4,7 +4,7 @@ import { OrdersModule } from 'src/orders/orders.module';
 import { CoreModule } from 'src/core/core.module';
 
 @Module({
-  imports: [CoreModule,OrdersModule],
+  imports: [CoreModule],
   providers: [NotificationsService],
   exports: [NotificationsService],
 })

@@ -1,8 +1,11 @@
 import { Controller, Post, Get, Body } from '@nestjs/common';
+import { OrdersService } from './orders.service';
 
 @Controller('orders') 
 export class OrdersController {
   private orders: any[] = [];
+
+  constructor(private readonly ordersService: OrdersService) {} 
 
   @Get()
   findAll() {
@@ -14,6 +17,6 @@ export class OrdersController {
   create(@Body() createOrderDto: any) {
     console.log('[POST /orders]', createOrderDto);
     this.orders.push(createOrderDto); 
-    return { message: 'Order created', order: createOrderDto };
+    return this.ordersService.createOrder(createOrderDto);
   }
 }

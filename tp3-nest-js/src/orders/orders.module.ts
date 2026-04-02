@@ -4,7 +4,7 @@ import { NotificationsModule } from 'src/notifications/notifications.module';
 import { OrdersController } from './orders.controller';
 
 @Module({
-  imports: [forwardRef(() => NotificationsModule)],
+  imports: [NotificationsModule],
   providers: [OrdersService],
   controllers: [OrdersController],
   exports: [OrdersService], 
