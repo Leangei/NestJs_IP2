@@ -6,8 +6,8 @@ import { ProductModule } from '../product/product.module';
 import { CategoryResolver } from './resolvers/category.resolver';
 import { ProductResolver } from './resolvers/product.resolver';
 
-// import { CategoryCodeFirstResolver } from './resolvers/category.codefirst.resolver';
-// import { ProductCodeFirstResolver } from './resolvers/product.codefirst.resolver';
+import { CategoryCodeFirstResolver } from './resolvers/category.codefirst.resolver';
+import { ProductCodeFirstResolver } from './resolvers/product.codefirst.resolver';
 
 @Module({
   imports: [CategoryModule, ProductModule],
@@ -15,8 +15,8 @@ import { ProductResolver } from './resolvers/product.resolver';
     CategoryResolver,
     ProductResolver,
     
-    // CategoryCodeFirstResolver,
-    // ProductCodeFirstResolver,
+    CategoryCodeFirstResolver,
+    ProductCodeFirstResolver,
   ],
 })
 export class GraphqlModule {}
